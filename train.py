@@ -1,36 +1,34 @@
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import classification_report
+from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.naive_bayes import MultinomialNB
 import joblib
 
-# Example dataset (replace with your own or expand it)
+# Sample training data
 data = {
     "text": [
-        "Congratulations, you won a prize!",
-        "Reset your password immediately",
-        "Server down, please fix ASAP",
-        "Your invoice is attached",
-        "Suspicious login attempt detected"
+        "Congratulations! You've won a prize!",
+        "Get rich quick with crypto!",
+        "Your account has been suspended",
+        "Hi team, meeting at 10 AM",
+        "Thanks for your feedback",
+        "Your order has been shipped"
     ],
-    "label": ["spam", "phishing", "support", "support", "phishing"]
+    "label": ["spam", "spam", "spam", "ham", "ham", "ham"]
 }
+
 df = pd.DataFrame(data)
 
 # Vectorize text
-vectorizer = TfidfVectorizer()
+vectorizer = CountVectorizer()
 X = vectorizer.fit_transform(df["text"])
 y = df["label"]
 
-# Train model (Logistic Regression)
-model = LogisticRegression(max_iter=1000)
+# Train model
+model = MultinomialNB()
 model.fit(X, y)
 
-# Evaluate performance
-print(classification_report(y, model.predict(X)))
-
-# Save artifacts
+# Save model and vectorizer
 joblib.dump(model, "model.pkl")
 joblib.dump(vectorizer, "vectorizer.pkl")
 
-print("Training complete. Files saved: model.pkl, vectorizer.pkl")
+print("Model and vectorizer saved.")
