@@ -7,3 +7,5 @@ joblib
 matplotlib
 seaborn
 ipywidgets
+fastapi
+uvicorn
