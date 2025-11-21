@@ -35,42 +35,52 @@
   <p id="loading">Classifying...</p>
   <p id="result">Result: None</p>
 
-  <script>
-    async function classifyEmail() {
-      const emailText = document.getElementById("emailInput").value;
-      const resultEl = document.getElementById("result");
-      const loadingEl = document.getElementById("loading");
+<script>
+  async function classifyEmail() {
+    const emailText = document.getElementById("emailInput").value;
+    const resultEl = document.getElementById("result");
+    const loadingEl = document.getElementById("loading");
 
-      // Show loading
-      loadingEl.style.display = "block";
-      resultEl.innerText = "Result: None";
-      resultEl.style.color = "#f0f0f0";
+    // Show loading
+    loadingEl.style.display = "block";
+    resultEl.innerText = "Result: None";
+    resultEl.style.color = "#f0f0f0";
 
-      try {
-        const response = await fetch("https://sortify-4.onrender.com/classify", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ text: emailText })
-        });
+    try {
+      const response = await fetch("https://sortify-4.onrender.com/classify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ text: emailText })
+      });
 
-        const result = await response.json();
+      if (!response.ok) {
+        throw new Error("Server returned " + response.status);
+      }
 
-        // Hide loading
-        loadingEl.style.display = "none";
+      const result = await response.json();
 
-        // Show result with color coding
+      // Hide loading
+      loadingEl.style.display = "none";
+
+      // Show result with color coding
+      if (result.category) {
         resultEl.innerText = "Result: " + result.category;
         resultEl.style.color = result.category === "spam" ? "red" : "lightgreen";
-
-      } catch (error) {
-        loadingEl.style.display = "none";
-        resultEl.innerText = "Error: Unable to classify";
+      } else {
+        resultEl.innerText = "Error: Unexpected response";
         resultEl.style.color = "orange";
-        console.error("API error:", error);
       }
+
+    } catch (error) {
+      loadingEl.style.display = "none";
+      resultEl.innerText = "Error: Unable to classify";
+      resultEl.style.color = "orange";
+      console.error("API error:", error);
     }
-  </script>
+  }
+</script>
 </body>
 </html>
