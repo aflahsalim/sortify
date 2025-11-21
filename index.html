@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Email Classifier</title>
+  <style>
+    body {
+      background-color: #1e1e1e;
+      color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      padding: 40px;
+    }
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin-top: 10px;
+      width: 100%;
+    }
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <h1>Email Classifier</h1>
+  <input type="text" id="emailInput" placeholder="Paste email text here">
+  <button onclick="classifyEmail()">Classify</button>
+  <p id="result">Result: None</p>
+
+  <script>
+    async function classifyEmail() {
+      const emailText = document.getElementById("emailInput").value;
+
+      const response = await fetch("http://127.0.0.1:8000/classify", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: emailText })
+      });
+
+      const result = await response.json();
+      document.getElementById("result").innerText = "Result: " + result.category;
+    }
+  </script>
+</body>
+</html>
