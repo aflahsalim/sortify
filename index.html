@@ -1,85 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Email Classifier</title>
   <style>
     body {
-      background-color: #1e1e1e;
-      color: #f0f0f0;
+      background-color: #121212;
+      color: #ffffff;
       font-family: Arial, sans-serif;
-      padding: 40px;
+      text-align: center;
+      padding: 50px;
     }
-    input, button {
+    input {
+      width: 60%;
       padding: 10px;
       font-size: 16px;
-      margin-top: 10px;
-      width: 100%;
+      margin-bottom: 20px;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
     }
     #result {
       margin-top: 20px;
       font-size: 18px;
-      font-weight: bold;
-    }
-    #loading {
-      margin-top: 10px;
-      font-size: 16px;
-      color: yellow;
-      display: none;
+      color: #ffd700;
     }
   </style>
 </head>
 <body>
   <h1>Email Classifier</h1>
-  <input type="text" id="emailInput" placeholder="Paste email text here">
+  <input type="text" id="emailInput" placeholder="Paste your email text here..." />
   <button onclick="classifyEmail()">Classify</button>
-  <p id="loading">Classifying...</p>
   <p id="result">Result: None</p>
 
-<script>
-  async function classifyEmail() {
-    const emailText = document.getElementById("emailInput").value;
-    const resultEl = document.getElementById("result");
-    const loadingEl = document.getElementById("loading");
+  <script>
+    async function classifyEmail() {
+      const emailText = document.getElementById("emailInput").value;
+      const resultBox = document.getElementById("result");
+      resultBox.innerText = "Classifying...";
 
-    // Show loading
-    loadingEl.style.display = "block";
-    resultEl.innerText = "Result: None";
-    resultEl.style.color = "#f0f0f0";
+      try {
+        const response = await fetch("https://notify-4.onrender.com/classify", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ text: emailText })
+        });
 
-    try {
-      const response = await fetch("https://spotify-4.onrender.com/classify", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({ text: emailText })
-});
-
-      if (!response.ok) {
-        throw new Error("Server returned " + response.status);
+        const data = await response.json();
+        resultBox.innerText = "Result: " + (data.category || data.error || "Unknown");
+      } catch (error) {
+        resultBox.innerText = "Error: Could not classify";
+        console.error("Classification error:", error);
       }
-
-      const result = await response.json();
-
-      // Hide loading
-      loadingEl.style.display = "none";
-
-      // Show result with color coding
-      if (result.category) {
-        resultEl.innerText = "Result: " + result.category;
-        resultEl.style.color = result.category === "spam" ? "red" : "lightgreen";
-      } else {
-        resultEl.innerText = "Error: Unexpected response";
-        resultEl.style.color = "orange";
-      }
-
-    } catch (error) {
-      loadingEl.style.display = "none";
-      resultEl.innerText = "Error: Unable to classify";
-      resultEl.style.color = "orange";
-      console.error("API error:", error);
     }
-  }
-</script>
+  </script>
 </body>
 </html>
