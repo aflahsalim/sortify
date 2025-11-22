@@ -4,20 +4,17 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 import joblib
 
-# Load your dataset
-df = pd.read_csv("email dataset.csv")  # make sure the filename matches exactly
+# Load dataset
+df = pd.read_csv("email dataset.csv")
 
-# Create pipeline: vectorizer + classifier
+# Create pipeline
 model = Pipeline([
     ('vectorizer', TfidfVectorizer()),
     ('classifier', MultinomialNB())
 ])
 
-# Train the model
+# Train and save
 model.fit(df['text'], df['label'])
-
-# Save model and vectorizer
 joblib.dump(model, 'model.pkl')
-joblib.dump(model.named_steps['vectorizer'], 'vectorizer.pkl')
 
-print("Model and vectorizer saved successfully.")
+print("Model saved successfully.")
