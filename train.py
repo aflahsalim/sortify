@@ -9,7 +9,7 @@ df = pd.read_csv("email dataset.csv")
 
 print("Columns in dataset:", df.columns)  # Debugging step
 
-X = df['body']       # email text
+X = df['body']       # email text column
 y = df['category']   # ham, spam, phishing, support
 
 # Create pipeline
