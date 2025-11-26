@@ -4,8 +4,13 @@ from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
 import joblib
 
-# Load dataset (must include labels: ham, spam, phishing, support)
+# Load dataset (columns: body, category)
 df = pd.read_csv("email dataset.csv")
+
+print("Columns in dataset:", df.columns)  # Debugging step
+
+X = df['body']       # email text
+y = df['category']   # ham, spam, phishing, support
 
 # Create pipeline
 model = Pipeline([
@@ -14,7 +19,7 @@ model = Pipeline([
 ])
 
 # Train and save
-model.fit(df['text'], df['label'])  # labels should be ham, spam, phishing, support
+model.fit(X, y)
 joblib.dump(model, 'model.pkl')
 
-print("Model trained and saved successfully with 4 labels.")
+print("Model trained and saved successfully with 4 labels (ham, spam, phishing, support).")
