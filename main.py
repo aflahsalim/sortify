@@ -2,13 +2,13 @@ import joblib
 from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 
 # Load trained model
 model = joblib.load("model.pkl")
 
 app = FastAPI()
 
+# Enable CORS for frontend access
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,9 +16,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve static files from /static
-app.mount("/static", StaticFiles(directory="public", html=True), name="static")
-
+# Define request schema
 class EmailRequest(BaseModel):
     text: str
     attachment: str = "Unknown"
