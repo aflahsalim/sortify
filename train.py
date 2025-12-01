@@ -12,15 +12,15 @@ df = pd.read_csv("email dataset.csv")
 print("Columns in dataset:", df.columns)  # Debugging step
 
 # Combine subject + body into one text feature
-df["text"] = df["subject"].fillna("") + " " + df["body"].fillna("")
+df["Text"] = df["Subject"].fillna("") + " " + df["Body"].fillna("")
 
-X = df[["text", "attachment"]]  # Features: text + attachment
-y = df["label"]                # Target labels: ham, spam, phishing, support
+X = df[["Text", "Attachment"]]  # Features: text + attachment
+y = df["Label"]                # Target labels: ham, spam, phishing, support
 
 # Preprocessing pipeline
 preprocessor = ColumnTransformer([
-    ("text", TfidfVectorizer(), "text"),
-    ("attachment", OneHotEncoder(), ["attachment"])
+    ("Text", TfidfVectorizer(), "Text"),
+    ("Attachment", OneHotEncoder(), ["Attachment"])
 ])
 
 # Full model pipeline
